@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "k8s-project.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.schedule }}"
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "k8s-project.labels" . | nindent 8 }}
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "k8s-project.labels" . | nindent 12 }}
+        spec:
+          containers:
+          - name: {{ .Values.name }}
+            image: "{{ .Values.image }}"
+            imagePullPolicy: {{ .Values.imagePullPolicy }}
+            env:
+            - name: POD_STATUS
+              value: "{{ .Values.podStatus }}"
+          restartPolicy: {{ .Values.restartPolicy }}
+          serviceAccountName: {{ include "k8s-project.fullname" . }}
+      backoffLimit: {{ .Values.backoffLimit }}

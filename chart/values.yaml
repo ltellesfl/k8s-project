@@ -1,0 +1,15 @@
+name: pod-reader
+
+schedule: "*/5 * * * *" # every 5 minutes, you can use https://crontab.guru/ to generate your schedule
+
+successfulJobsHistoryLimit: 1 # only keep the last successful job
+
+image: k8s-project:latest
+imagePullPolicy: IfNotPresent
+
+restartPolicy: Never 
+
+backoffLimit: 1 # number of retries before considering a job as failed
+
+# Pod status to look for it can be one of: Terminating, Error, Completed, Running or CreateContainerConfigError
+podStatus: "Running"
